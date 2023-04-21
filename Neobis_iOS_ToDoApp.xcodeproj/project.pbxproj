@@ -13,6 +13,7 @@
 		1CDBCAD029EE96C500755A70 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDBCACE29EE96C500755A70 /* Main.storyboard */; };
 		1CDBCAD229EE96C600755A70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDBCAD129EE96C600755A70 /* Assets.xcassets */; };
 		1CDBCAD529EE96C600755A70 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDBCAD329EE96C600755A70 /* LaunchScreen.storyboard */; };
+		1CDBCAE429EE9BCC00755A70 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1CDBCAE329EE9BCC00755A70 /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CDBCAE429EE9BCC00755A70 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +85,9 @@
 			dependencies = (
 			);
 			name = Neobis_iOS_ToDoApp;
+			packageProductDependencies = (
+				1CDBCAE329EE9BCC00755A70 /* SnapKit */,
+			);
 			productName = Neobis_iOS_ToDoApp;
 			productReference = 1CDBCAC529EE96C500755A70 /* Neobis_iOS_ToDoApp.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +116,9 @@
 				Base,
 			);
 			mainGroup = 1CDBCABC29EE96C500755A70;
+			packageReferences = (
+				1CDBCAE229EE9BCC00755A70 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = 1CDBCAC629EE96C500755A70 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -358,6 +366,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1CDBCAE229EE9BCC00755A70 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				branch = develop;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1CDBCAE329EE9BCC00755A70 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CDBCAE229EE9BCC00755A70 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1CDBCABD29EE96C500755A70 /* Project object */;
 }
