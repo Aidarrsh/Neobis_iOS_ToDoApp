@@ -18,6 +18,8 @@ extension UIImage {
     }
 }
 
+let popupView = UIView()
+
 
 class ViewController: UIViewController {
 
@@ -90,7 +92,6 @@ class ViewController: UIViewController {
         }
     
     @objc func showPopup() {
-        let popupView = UIView()
         popupView.backgroundColor = UIColor(red: 246/255, green: 245/255, blue: 247/255, alpha: 100)
         view.addSubview(popupView)
             
@@ -98,7 +99,7 @@ class ViewController: UIViewController {
         popupView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         popupView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         popupView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        popupView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        popupView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
 //        popupView.heightAnchor.constraint(equalToConstant: 300)
             
         popupView.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
@@ -107,7 +108,77 @@ class ViewController: UIViewController {
         }
         
         let navigationView = UINavigationController()
-        let cancelButton = UIBarButtonItem()
+        let customViewController = UIViewController() // Your custom view controller
         
+        let cancelButton = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(cancelButtonTapped))
+        cancelButton.tintColor = .red
+        customViewController.navigationItem.leftBarButtonItem = cancelButton
+        
+        let saveButton = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(saveButtonTapped))
+        saveButton.tintColor = .systemBlue
+        customViewController.navigationItem.rightBarButtonItem = saveButton
+        
+        navigationView.viewControllers = [customViewController]
+        navigationView.navigationBar.tintColor = .black
+        navigationView.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
+        
+        popupView.addSubview(navigationView.view)
+        navigationView.view.translatesAutoresizingMaskIntoConstraints = false
+        navigationView.view.topAnchor.constraint(equalTo: popupView.safeAreaLayoutGuide.topAnchor).isActive = true
+        navigationView.view.bottomAnchor.constraint(equalTo: popupView.bottomAnchor).isActive = true
+        navigationView.view.leadingAnchor.constraint(equalTo: popupView.leadingAnchor).isActive = true
+        navigationView.view.trailingAnchor.constraint(equalTo: popupView.trailingAnchor).isActive = true
+        
+        let separatorView = UIView()
+            separatorView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+            separatorView.translatesAutoresizingMaskIntoConstraints = false
+            
+            navigationView.view.addSubview(separatorView)
+            separatorView.topAnchor.constraint(equalTo: navigationView.navigationBar.bottomAnchor).isActive = true
+            separatorView.leadingAnchor.constraint(equalTo: popupView.leadingAnchor).isActive = true
+            separatorView.trailingAnchor.constraint(equalTo: popupView.trailingAnchor).isActive = true
+            separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        let nameTextField = UITextField()
+        nameTextField.translatesAutoresizingMaskIntoConstraints = false
+        nameTextField.placeholder = "Название"
+        nameTextField.borderStyle = .roundedRect
+        popupView.addSubview(nameTextField)
+        
+        nameTextField.snp.makeConstraints{ maker in
+            maker.left.equalToSuperview().inset(40)
+            maker.top.equalToSuperview().inset(120)
+            maker.right.equalToSuperview().inset(40)
+            maker.height.equalTo(40)
+        }
+        
+        let descriptionTextField = UITextField()
+        descriptionTextField.translatesAutoresizingMaskIntoConstraints = false
+        descriptionTextField.placeholder = "Описание"
+        descriptionTextField.contentVerticalAlignment = .top
+        descriptionTextField.borderStyle = .roundedRect
+        popupView.addSubview(descriptionTextField)
+        
+        descriptionTextField.snp.makeConstraints{ maker in
+            maker.left.equalToSuperview().inset(40)
+            maker.top.equalToSuperview().inset(180)
+            maker.right.equalToSuperview().inset(40)
+            maker.bottom.equalToSuperview().inset(100)
+        }
+            
     }
+    
+    @objc func saveButtonTapped() {
+        //TODO
+    }
+    
+    @objc func cancelButtonTapped() {
+        UIView.animate(withDuration: 0.3, animations: {
+            popupView.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+        }) { _ in
+            popupView.removeFromSuperview()
+        }
+    }
+    
+    
 }
