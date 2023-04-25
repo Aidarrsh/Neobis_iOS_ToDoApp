@@ -18,34 +18,103 @@ extension UIImage {
     }
 }
 
-let popupView = UIView()
+extension NSObject {
+
+    class var nameOfClass: String {
+        return NSStringFromClass(self).components(separatedBy: ".").last!
+    }
+}
 
 
-class ViewController: UIViewController {
+
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return models.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.nameOfClass, for: indexPath) as! TableViewCell
+        let model = models[indexPath.row]
+        cell.titleLabel.text = model.name
+        cell.descriptionLabel.text = model.descript
+        let checkmarkView = UIImageView(image: UIImage(named: "checkmark"))
+        cell.accessoryView = checkmarkView
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath){
+        if editingStyle == .delete {
+            let deletedItem = models.remove(at: indexPath.row)
+            tableView.beginUpdates()
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+            
+            // Remove the item from the context
+            context.delete(deletedItem)
+            
+            // Save the changes
+            do {
+                try context.save()
+            } catch {
+                print("Error deleting item: \(error.localizedDescription)")
+            }
+            
+            if models.count == 0{
+                tableView.isHidden = true
+            }
+        }
+    }
+    
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    let nameTextField = UITextField()
+    let descriptionTextField = UITextField()
+    let popupView = UIView()
+    let label = UILabel()
+    let addButton = UIButton()
+    let editButton = UIButton()
+
+    
+    let tableView: UITableView = {
+        let table = UITableView()
+        table.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.nameOfClass)
+        table.translatesAutoresizingMaskIntoConstraints = false // Set this to false to enable auto layout
+        return table
+    }()
+    
+    let labelView = UIView()
+    
+    private var models = [ToDoListItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         initialize()
-        
+        constraints()
     }
 
-    private func initialize(){
+    func initialize(){
         view.backgroundColor = UIColor(ciColor: .white)
         
-        let label = UILabel()
         label.text = "Создайте новую задачу нажав кнопку плюс."
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .center
+        view.addSubview(tableView)
         view.addSubview(label)
         
-        label.snp.makeConstraints{maker in
-            maker.left.equalToSuperview().inset(50)
-            maker.top.equalToSuperview().inset(100)
-            maker.right.equalToSuperview().inset(50)
-
+     
+        label.snp.updateConstraints() { make in
+            make.top.equalTo(tableView.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
         }
-        let editButton = UIButton()
+        
+        labelView.backgroundColor = .black
+        
         let pencilImage = UIImage(systemName: "pencil")?.resized(to: CGSize(width: 30, height: 30))
         editButton.setImage(pencilImage?.withTintColor(.white), for: .normal)
 
@@ -58,14 +127,8 @@ class ViewController: UIViewController {
         
         view.addSubview(editButton)
         
-        editButton.snp.makeConstraints{maker in
-            maker.right.equalToSuperview().inset(15)
-            maker.bottom.equalToSuperview().inset(120)
-            maker.width.equalTo(50)
-            maker.height.equalTo(50)
-        }
         
-        let addButton = UIButton()
+        
         let image = UIImage(systemName: "plus")?.resized(to: CGSize(width: 30, height: 30))
         addButton.setImage(image?.withTintColor(.white), for: .normal)
 
@@ -78,13 +141,20 @@ class ViewController: UIViewController {
         
         view.addSubview(addButton)
         
-        addButton.snp.makeConstraints{maker in
-            maker.right.equalToSuperview().inset(15)
-            maker.bottom.equalToSuperview().inset(50)
-            maker.width.equalTo(50)
-            maker.height.equalTo(50)
-        }
         addButton.addTarget(self, action: #selector(showPopup), for: .touchUpInside)
+        
+       
+        getAllTimes()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.frame = view.bounds
+        tableView.rowHeight = 50
+    
+        if ((models.count) != 0){
+            tableView.isHidden = false
+        } else {
+            tableView.isHidden = true
+        }
     }
     
     @objc func addButtonTapped() {
@@ -104,7 +174,7 @@ class ViewController: UIViewController {
             
         popupView.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
             UIView.animate(withDuration: 0.3) {
-                popupView.transform = .identity
+                self.popupView.transform = .identity
         }
         
         let navigationView = UINavigationController()
@@ -139,12 +209,113 @@ class ViewController: UIViewController {
             separatorView.trailingAnchor.constraint(equalTo: popupView.trailingAnchor).isActive = true
             separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        let nameTextField = UITextField()
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.placeholder = "Название"
         nameTextField.borderStyle = .roundedRect
         popupView.addSubview(nameTextField)
         
+        descriptionTextField.translatesAutoresizingMaskIntoConstraints = false
+        descriptionTextField.placeholder = "Описание"
+        descriptionTextField.contentVerticalAlignment = .top
+        descriptionTextField.borderStyle = .roundedRect
+        popupView.addSubview(descriptionTextField)
+        
+        popUpViewConstraints()
+    }
+    
+    @objc func saveButtonTapped() {
+        self.createItem(name: self.nameTextField.text ?? "Name", descript: self.descriptionTextField.text ?? "Description")
+        self.tableView.isHidden = false
+        UIView.animate(withDuration: 0.3, animations: {
+            self.popupView.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+        }) { _ in
+            self.popupView.removeFromSuperview()
+        }
+    }
+    
+    @objc func cancelButtonTapped() {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.popupView.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+        }) { _ in
+            self.popupView.removeFromSuperview()
+        }
+    }
+    
+    func getAllTimes() {
+        do {
+            models = try context.fetch(ToDoListItem.fetchRequest())
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+        catch {
+            // error
+        }
+    }
+    
+    func createItem(name: String, descript: String){
+        let newItem = ToDoListItem(context: context)
+        newItem.id = Int32()
+        newItem.name = name
+        newItem.descript = descript
+        
+        do {
+            try context.save()
+            getAllTimes()
+        }
+        catch {
+            
+        }
+    }
+    
+    func updateItem(item: ToDoListItem, newName: String, newDescr: String){
+        item.name = newName
+        item.descript = newDescr
+        
+        do {
+            try context.save()
+        }
+        catch {
+            
+        }
+    }
+    
+    func deleteItem(item: ToDoListItem){
+        context.delete(item)
+        
+        do {
+            try context.save()
+        }
+        catch {
+            
+        }
+    }
+    
+    func constraints(){
+        editButton.snp.makeConstraints{maker in
+            maker.right.equalToSuperview().inset(15)
+            maker.bottom.equalToSuperview().inset(120)
+            maker.width.equalTo(50)
+            maker.height.equalTo(50)
+        }
+        
+        addButton.snp.makeConstraints{maker in
+            maker.right.equalToSuperview().inset(15)
+            maker.bottom.equalToSuperview().inset(50)
+            maker.width.equalTo(50)
+            maker.height.equalTo(50)
+        }
+        
+        tableView.snp.makeConstraints() { make in
+            make.top.equalToSuperview().offset(50)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-250)
+        }
+    }
+    
+    func popUpViewConstraints(){
         nameTextField.snp.makeConstraints{ maker in
             maker.left.equalToSuperview().inset(40)
             maker.top.equalToSuperview().inset(120)
@@ -152,33 +323,11 @@ class ViewController: UIViewController {
             maker.height.equalTo(40)
         }
         
-        let descriptionTextField = UITextField()
-        descriptionTextField.translatesAutoresizingMaskIntoConstraints = false
-        descriptionTextField.placeholder = "Описание"
-        descriptionTextField.contentVerticalAlignment = .top
-        descriptionTextField.borderStyle = .roundedRect
-        popupView.addSubview(descriptionTextField)
-        
         descriptionTextField.snp.makeConstraints{ maker in
             maker.left.equalToSuperview().inset(40)
             maker.top.equalToSuperview().inset(180)
             maker.right.equalToSuperview().inset(40)
             maker.bottom.equalToSuperview().inset(100)
         }
-            
     }
-    
-    @objc func saveButtonTapped() {
-        //TODO
-    }
-    
-    @objc func cancelButtonTapped() {
-        UIView.animate(withDuration: 0.3, animations: {
-            popupView.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
-        }) { _ in
-            popupView.removeFromSuperview()
-        }
-    }
-    
-    
 }

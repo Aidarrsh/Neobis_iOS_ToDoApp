@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C0A4C6129F7C343005095C8 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A4C6029F7C343005095C8 /* TableViewCell.swift */; };
 		1C67EEA529F404170062D2BE /* Neobis_IOS_ToDoApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C67EEA329F404170062D2BE /* Neobis_IOS_ToDoApp.xcdatamodeld */; };
-		1C67EEA729F549CF0062D2BE /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C67EEA629F549CF0062D2BE /* Note.swift */; };
-		1C67EEA929F54ACA0062D2BE /* NameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C67EEA829F54ACA0062D2BE /* NameCell.swift */; };
-		1C67EEAB29F54AD40062D2BE /* NameCellTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C67EEAA29F54AD40062D2BE /* NameCellTableView.swift */; };
+		1C67EEAE29F559E00062D2BE /* ToDoListItem +CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C67EEAC29F559E00062D2BE /* ToDoListItem +CoreDataClass.swift */; };
+		1C67EEAF29F559E00062D2BE /* ToDoListItem +CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C67EEAD29F559E00062D2BE /* ToDoListItem +CoreDataProperties.swift */; };
 		1CDBCAC929EE96C500755A70 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBCAC829EE96C500755A70 /* AppDelegate.swift */; };
 		1CDBCACB29EE96C500755A70 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBCACA29EE96C500755A70 /* SceneDelegate.swift */; };
 		1CDBCACD29EE96C500755A70 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBCACC29EE96C500755A70 /* ViewController.swift */; };
@@ -21,10 +21,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C0A4C6029F7C343005095C8 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		1C67EEA429F404170062D2BE /* Neobis_IOS_ToDoApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Neobis_IOS_ToDoApp.xcdatamodel; sourceTree = "<group>"; };
-		1C67EEA629F549CF0062D2BE /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
-		1C67EEA829F54ACA0062D2BE /* NameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameCell.swift; sourceTree = "<group>"; };
-		1C67EEAA29F54AD40062D2BE /* NameCellTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameCellTableView.swift; sourceTree = "<group>"; };
+		1C67EEAC29F559E00062D2BE /* ToDoListItem +CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ToDoListItem +CoreDataClass.swift"; sourceTree = "<group>"; };
+		1C67EEAD29F559E00062D2BE /* ToDoListItem +CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ToDoListItem +CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1CDBCAC529EE96C500755A70 /* Neobis_iOS_ToDoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neobis_iOS_ToDoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CDBCAC829EE96C500755A70 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CDBCACA29EE96C500755A70 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -47,6 +47,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C67EEB029F55EC10062D2BE /* List */ = {
+			isa = PBXGroup;
+			children = (
+				1C67EEAC29F559E00062D2BE /* ToDoListItem +CoreDataClass.swift */,
+				1C67EEAD29F559E00062D2BE /* ToDoListItem +CoreDataProperties.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
 		1CDBCABC29EE96C500755A70 = {
 			isa = PBXGroup;
 			children = (
@@ -66,6 +75,8 @@
 		1CDBCAC729EE96C500755A70 /* Neobis_iOS_ToDoApp */ = {
 			isa = PBXGroup;
 			children = (
+				1C0A4C6029F7C343005095C8 /* TableViewCell.swift */,
+				1C67EEB029F55EC10062D2BE /* List */,
 				1CDBCAC829EE96C500755A70 /* AppDelegate.swift */,
 				1CDBCACA29EE96C500755A70 /* SceneDelegate.swift */,
 				1CDBCACC29EE96C500755A70 /* ViewController.swift */,
@@ -74,9 +85,6 @@
 				1CDBCAD329EE96C600755A70 /* LaunchScreen.storyboard */,
 				1CDBCAD629EE96C600755A70 /* Info.plist */,
 				1C67EEA329F404170062D2BE /* Neobis_IOS_ToDoApp.xcdatamodeld */,
-				1C67EEA629F549CF0062D2BE /* Note.swift */,
-				1C67EEA829F54ACA0062D2BE /* NameCell.swift */,
-				1C67EEAA29F54AD40062D2BE /* NameCellTableView.swift */,
 			);
 			path = Neobis_iOS_ToDoApp;
 			sourceTree = "<group>";
@@ -158,13 +166,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C67EEA929F54ACA0062D2BE /* NameCell.swift in Sources */,
-				1C67EEA729F549CF0062D2BE /* Note.swift in Sources */,
 				1CDBCACD29EE96C500755A70 /* ViewController.swift in Sources */,
-				1C67EEAB29F54AD40062D2BE /* NameCellTableView.swift in Sources */,
 				1CDBCAC929EE96C500755A70 /* AppDelegate.swift in Sources */,
+				1C67EEAE29F559E00062D2BE /* ToDoListItem +CoreDataClass.swift in Sources */,
 				1CDBCACB29EE96C500755A70 /* SceneDelegate.swift in Sources */,
 				1C67EEA529F404170062D2BE /* Neobis_IOS_ToDoApp.xcdatamodeld in Sources */,
+				1C0A4C6129F7C343005095C8 /* TableViewCell.swift in Sources */,
+				1C67EEAF29F559E00062D2BE /* ToDoListItem +CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
