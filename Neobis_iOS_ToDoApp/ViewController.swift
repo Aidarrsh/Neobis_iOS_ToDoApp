@@ -47,12 +47,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return .delete
     }
     
+    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath){
         if editingStyle == .delete {
             let deletedItem = models.remove(at: indexPath.row)
             tableView.beginUpdates()
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.endUpdates()
+            tableViewHeight.deactivate()
+            tableView.snp.makeConstraints{ make in
+                tableViewHeight = make.height.equalTo(models.count * 55).constraint
+            }
+            view.updateConstraints()
             
             // Remove the item from the context
             context.delete(deletedItem)
@@ -78,6 +84,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     let label = UILabel()
     let addButton = UIButton()
     let editButton = UIButton()
+    
+    var tableViewHeight : Constraint!
 
     
     let tableView: UITableView = {
@@ -107,12 +115,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         view.addSubview(tableView)
         view.addSubview(label)
         
-     
-        label.snp.updateConstraints() { make in
-            make.top.equalTo(tableView.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-        }
-        
         labelView.backgroundColor = .black
         
         let pencilImage = UIImage(systemName: "pencil")?.resized(to: CGSize(width: 30, height: 30))
@@ -127,6 +129,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         view.addSubview(editButton)
         
+        editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        
         
         
         let image = UIImage(systemName: "plus")?.resized(to: CGSize(width: 30, height: 30))
@@ -138,6 +142,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         addButton.translatesAutoresizingMaskIntoConstraints = false
         addButton.layer.cornerRadius = 25
         addButton.clipsToBounds = true
+        
         
         view.addSubview(addButton)
         
@@ -160,6 +165,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @objc func addButtonTapped() {
             showPopup()
         }
+    
+    @objc func editButtonTapped(){
+        editButton.isSelected = !editButton.isSelected
+        
+        let pencilImage = editButton.isSelected ? UIImage(systemName: "xmark")?.resized(to: CGSize(width: 30, height: 30)) : UIImage(systemName: "pencil")?.resized(to: CGSize(width: 30, height: 30))
+        editButton.setImage(pencilImage?.withTintColor(.white), for: .normal)
+        
+        tableView.setEditing(true, animated: true)
+        editButton.isSelected ? (tableView.isEditing = true) : (tableView.isEditing = false)
+        tableView.allowsSelectionDuringEditing = true
+        
+        if editButton.isSelected{
+            addButton.isHidden = true
+        } else {
+            addButton.isHidden = false
+        }
+    }
     
     @objc func showPopup() {
         popupView.backgroundColor = UIColor(red: 246/255, green: 245/255, blue: 247/255, alpha: 100)
@@ -231,6 +253,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }) { _ in
             self.popupView.removeFromSuperview()
         }
+        getAllTimes()
+        tableViewHeight.deactivate()
+        tableView.snp.makeConstraints{ make in
+            tableViewHeight = make.height.equalTo(models.count * 55).constraint
+        }
+        view.updateConstraints()
     }
     
     @objc func cancelButtonTapped() {
@@ -292,6 +320,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+            self.view.endEditing(true)
+        }
+        
+    
     func constraints(){
         editButton.snp.makeConstraints{maker in
             maker.right.equalToSuperview().inset(15)
@@ -307,12 +340,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             maker.height.equalTo(50)
         }
         
-        tableView.snp.makeConstraints() { make in
+        tableView.snp.updateConstraints() { make in
             make.top.equalToSuperview().offset(50)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-250)
+//            make.bottom.equalToSuperview().offset(models.count * (-150))
+//            make.height.equalTo(models.count * 55)
         }
+        
+        tableView.snp.makeConstraints{ make in
+            tableViewHeight = make.height.equalTo(models.count * 55).constraint
+        }
+        
+        label.snp.updateConstraints() { make in
+            make.top.equalTo(tableView.snp.bottom).offset(20)
+//            make.trailing.equalTo(50)
+//            make.leading.equalTo(50)
+            make.centerX.equalToSuperview()
+        }
+        
     }
     
     func popUpViewConstraints(){
