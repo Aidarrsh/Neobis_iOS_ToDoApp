@@ -47,6 +47,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return .delete
     }
     
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let itemMove = models[sourceIndexPath.row]
+        models.remove(at: sourceIndexPath.row)
+        models.insert(itemMove, at: destinationIndexPath.row)
+    }
+    
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath){
         if editingStyle == .delete {
@@ -171,8 +177,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         let pencilImage = editButton.isSelected ? UIImage(systemName: "xmark")?.resized(to: CGSize(width: 30, height: 30)) : UIImage(systemName: "pencil")?.resized(to: CGSize(width: 30, height: 30))
         editButton.setImage(pencilImage?.withTintColor(.white), for: .normal)
-        
-        tableView.setEditing(true, animated: true)
+        editButton.isSelected ? tableView.setEditing(true, animated: true) : tableView.setEditing(false, animated: true)
         editButton.isSelected ? (tableView.isEditing = true) : (tableView.isEditing = false)
         tableView.allowsSelectionDuringEditing = true
         

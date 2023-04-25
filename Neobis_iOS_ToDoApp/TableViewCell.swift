@@ -81,8 +81,8 @@ class TableViewCell: UITableViewCell {
     }
     
     @objc func infoButtonPressed(){
-//        let viewClass = ViewController()
-//        viewClass.showPopup()
+        let viewClass = ViewController()
+        viewClass.showPopup()
     }
     
     required init?(coder: NSCoder) {
